@@ -8,18 +8,18 @@ class Model(nn.Module):
         self.video = nn.Sequential(
             nn.Conv3d(3, 16, (1, 7, 7)),
             nn.ReLU(),
-            nn.MaxPool3d((2, 2, 2)),
+            nn.MaxPool3d((2, 4, 4)),
             nn.BatchNorm3d(16),
-            nn.Conv3d(16, 8, (5, 5, 5), padding=2),
+            nn.Conv3d(16, 8, (3, 5, 5), padding=(1, 2, 2)),
             nn.ReLU(),
-            nn.MaxPool3d((2, 2, 2)),
+            nn.MaxPool3d((2, 3, 3)),
             nn.BatchNorm3d(8),
             nn.Conv3d(8, 4, (3, 3, 3), padding=1),
             nn.ReLU(),
             nn.MaxPool3d((2, 2, 2)),
             nn.BatchNorm3d(4),
             nn.Flatten(),
-            nn.Linear(2376, 512),
+            nn.Linear(5148, 512),
         )
         self.feature = nn.Linear(39, 8)
         self.end = nn.Sequential(
@@ -35,16 +35,13 @@ class Model(nn.Module):
 
 
 if __name__ == "__main__":
-    from utils import load_videos, load_features
+    from utils import LieDataset
+    from torch.utils.data import DataLoader
 
-    truth_video, lie_video = load_videos()
-    truth_feature, lie_feature = load_features()
+    dataset = LieDataset(False)
+    dataloader = DataLoader(dataset)
 
-    m = Model().to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))
+    vid, fea, lab = next(iter(dataloader))
 
-    m.forward(
-        (
-            torch.from_numpy(truth_video[0:16]).float(),
-            torch.from_numpy(truth_feature[0:16]).float(),
-        )
-    )
+    m = Model()
+    m.forward((vid, fea))
