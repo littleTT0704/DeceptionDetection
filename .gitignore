@@ -1,2 +1,6 @@
 data/
 __pycache__/
+model.pt
+res/
+fig/
+data/

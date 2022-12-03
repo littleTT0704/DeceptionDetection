@@ -20,14 +20,14 @@ class Model(nn.Module):
             nn.BatchNorm3d(4),
             nn.Flatten(),
             nn.Linear(5148, 512),
+            nn.ReLU(),
         )
-        self.feature = nn.Linear(39, 8)
+        self.feature = nn.Sequential(nn.Linear(39, 8), nn.ReLU())
         self.end = nn.Sequential(
             nn.Linear(520, 64), nn.ReLU(), nn.Linear(64, 2), nn.Softmax(1)
         )
 
-    def forward(self, x):
-        video, feature = x
+    def forward(self, video, feature):
         video = self.video(video)
         feature = self.feature(feature)
         concat = torch.concat([video, feature], dim=1)
@@ -44,4 +44,4 @@ if __name__ == "__main__":
     vid, fea, lab = next(iter(dataloader))
 
     m = Model()
-    m.forward((vid, fea))
+    m.forward(vid, fea)

@@ -71,9 +71,10 @@ class LieDataset(Dataset):
         self.root_path = f"./data/{DW}_{DH}/"
         self.data = []
         for filename in os.listdir(self.root_path):
-            category, idx, _ = filename.split("_")
+            category, idx, end = filename.split("_")
+            offset = int(end.split(".")[0])
             idx = int(idx)
-            if train ^ (idx < 8):
+            if offset == 0 and (train ^ (idx <= 8)):
                 self.data.append(
                     (os.path.join(self.root_path, filename), category, idx)
                 )

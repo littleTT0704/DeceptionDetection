@@ -35,7 +35,7 @@ if __name__ == "__main__":
         train_loss = 0.0
         train_accu = 0.0
         for (vid, fea, lab) in train_dataloader:
-            pred = m((vid, fea))
+            pred = m(vid, fea)
             loss = criterion(pred, lab)
 
             train_loss += loss.item()
@@ -54,7 +54,7 @@ if __name__ == "__main__":
         test_loss = 0.0
         test_accu = 0.0
         for (vid, fea, lab) in test_dataloader:
-            pred = m((vid, fea))
+            pred = m(vid, fea)
             loss = criterion(pred, lab)
 
             test_loss += loss.item()
