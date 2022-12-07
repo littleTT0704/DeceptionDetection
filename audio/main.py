@@ -9,7 +9,7 @@ if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     train_dataset = AudioDataset(True, device)
     test_dataset = AudioDataset(False, device)
-    
+
     batch_size = 2
     train_dataloader = DataLoader(train_dataset, batch_size, True, num_workers=0)
     test_dataloader = DataLoader(test_dataset, batch_size, num_workers=0)
@@ -20,7 +20,7 @@ if __name__ == "__main__":
 
     audio, lab = next(iter(train_dataloader))
     input_shape = audio.shape[-1]
-    model = FC_LSTM(input_shape, num_layers = 2).to(device) # .to(device)
+    model = FC_LSTM(input_shape, num_layers=2).to(device)
 
     criterion = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters())
@@ -43,7 +43,7 @@ if __name__ == "__main__":
 
             train_loss += loss.item()
             train_accu += torch.sum(torch.argmax(lab, 1) == torch.argmax(pred, 1))
-            
+
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
