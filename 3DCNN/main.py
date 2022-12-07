@@ -1,14 +1,14 @@
-from utils import LieDataset
+from utils import VideoDataset
 from torch.utils.data import DataLoader
-from model import Model
+from model import CNN3D
 import torch
 import numpy as np
 import time
 
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    train_dataset = LieDataset(True, device)
-    test_dataset = LieDataset(False, device)
+    train_dataset = VideoDataset(True, device)
+    test_dataset = VideoDataset(False, device)
 
     batch_size = 2
     train_dataloader = DataLoader(train_dataset, batch_size, True, num_workers=0)
@@ -18,7 +18,7 @@ if __name__ == "__main__":
     print(f"train dataset size {train_size}")
     print(f"test  dataset size {test_size}")
 
-    m = Model().to(device)
+    m = CNN3D().to(device)
     criterion = torch.nn.CrossEntropyLoss(reduction="sum")
     optimizer = torch.optim.Adam(m.parameters())
 
@@ -34,8 +34,9 @@ if __name__ == "__main__":
         print(f"Epoch {i}")
         train_loss = 0.0
         train_accu = 0.0
-        for (vid, fea, lab) in train_dataloader:
-            pred = m(vid, fea)
+        m.train()
+        for vid, lab in train_dataloader:
+            pred = m(vid)
             loss = criterion(pred, lab)
 
             train_loss += loss.item()
@@ -53,8 +54,9 @@ if __name__ == "__main__":
 
         test_loss = 0.0
         test_accu = 0.0
-        for (vid, fea, lab) in test_dataloader:
-            pred = m(vid, fea)
+        m.eval()
+        for vid, lab in test_dataloader:
+            pred = m(vid)
             loss = criterion(pred, lab)
 
             test_loss += loss.item()
