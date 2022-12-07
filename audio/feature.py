@@ -10,7 +10,7 @@ N_VID = 60
 
 def extract_audio_features():
     device = torch.device("cpu")
-    m = FC_LSTM(196).to(device)
+    m = FC_LSTM(196, num_layers=1).to(device)
     m.load_state_dict(torch.load("./model.pt"))
     m.eval()
 

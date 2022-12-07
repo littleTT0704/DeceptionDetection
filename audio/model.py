@@ -4,10 +4,13 @@ from torch.autograd import Variable
 
 
 class FC_LSTM(nn.Module):
-    def __init__(self, input_size=13, hidden_size=128, num_layers=2, num_classes=2):
+    def __init__(
+        self, input_size=13, hidden_size=128, num_layers=2, num_classes=2, device=None
+    ):
         super(FC_LSTM, self).__init__()
         self.hidden_size = hidden_size
         self.num_layers = num_layers
+        self.device = device
         self.lstm = nn.LSTM(
             input_size, self.hidden_size, self.num_layers, batch_first=True, dropout=0.1
         )
@@ -20,8 +23,12 @@ class FC_LSTM(nn.Module):
 
     def forward(self, x, feature=False):
         x = x.float()
-        h0 = Variable(torch.zeros(self.num_layers, x.size(0), self.hidden_size).float())
-        c0 = Variable(torch.zeros(self.num_layers, x.size(0), self.hidden_size).float())
+        h0 = Variable(
+            torch.zeros(self.num_layers, x.size(0), self.hidden_size).float()
+        ).to(self.device)
+        c0 = Variable(
+            torch.zeros(self.num_layers, x.size(0), self.hidden_size).float()
+        ).to(self.device)
         out, _ = self.lstm(x, (h0, c0))
         out = self.relu(self.fc1(out[:, -1, :]))
         if feature:

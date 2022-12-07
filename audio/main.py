@@ -20,7 +20,7 @@ if __name__ == "__main__":
 
     audio, lab = next(iter(train_dataloader))
     input_shape = audio.shape[-1]
-    model = FC_LSTM(input_shape, num_layers=2).to(device)
+    model = FC_LSTM(input_shape, num_layers=1, device=device).to(device)
 
     criterion = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters())
@@ -37,6 +37,7 @@ if __name__ == "__main__":
         print(f"Epoch {i}")
         train_loss = 0.0
         train_accu = 0.0
+        model.train()
         for (fea, lab) in train_dataloader:
             pred = model(fea)
             loss = criterion(pred, lab)
@@ -56,6 +57,7 @@ if __name__ == "__main__":
 
         test_loss = 0.0
         test_accu = 0.0
+        model.eval()
         for (fea, lab) in test_dataloader:
             pred = model(fea)
             loss = criterion(pred, lab)
