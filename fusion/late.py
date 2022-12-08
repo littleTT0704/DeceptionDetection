@@ -64,7 +64,10 @@ faceCNNtrain = output(m, faceCNNtrain, "faceCNNtrain")
 faceCNNtest = FaceDataset(False, device)
 faceCNNtest = output(m, faceCNNtest, "faceCNNtest")
 
-train = landmarktrain + CNN3Dtrain + audiotrain + faceCNNtrain
+behaviortrain = np.load("behaviortrain.npy")
+behaviortest = np.load("behaviortest.npy")
+
+train = landmarktrain + CNN3Dtrain + audiotrain + faceCNNtrain + behaviortrain
 train_dataset = AudioDataset(True, device)
 train_dataloader = DataLoader(train_dataset, 1, False, num_workers=0)
 train_accu = 0.0
@@ -74,7 +77,7 @@ for i, (fea, lab) in enumerate(train_dataloader):
 train_accu /= len(train_dataset)
 print(f"train accuracy: {train_accu:.3f}")
 
-test = landmarktest + CNN3Dtest + audiotest + faceCNNtest
+test = landmarktest + CNN3Dtest + audiotest + faceCNNtest + behaviortest
 test_dataset = AudioDataset(False, device)
 test_dataloader = DataLoader(test_dataset, 1, False, num_workers=0)
 test_accu = 0.0

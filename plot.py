@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from model import Model
 import torch
 
 
@@ -63,4 +62,4 @@ def weight(filename):
 
 
 if __name__ == "__main__":
-    loss_acc("200")
+    loss_acc("landmark")
