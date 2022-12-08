@@ -3,7 +3,7 @@ import librosa
 import torch
 import numpy as np
 from moviepy.editor import *
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, DataLoader
 
 TF = "Truthful"
 DC = "Deceptive"
@@ -98,10 +98,8 @@ class AudioDataset(Dataset):
 
 
 if __name__ == "__main__":
-    types = [TF, DC]
-    for typ in types:
-        outputfolder = f"../data/Audios/{typ}"
-        rootDir = f"../data/Clips/{typ}"
-        extract_all_audios(rootDir, outputfolder)
-
     dataset = AudioDataset(False)
+    train_dataloader = DataLoader(dataset, 1, True, num_workers=0)
+    audio, lab = next(iter(train_dataloader))
+    input_shape = audio.shape[-1]
+    print(input_shape)
